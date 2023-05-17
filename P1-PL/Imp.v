@@ -171,10 +171,20 @@ Proof. reflexivity. Qed.
 (** Here is the formal definition of the abstract syntax of
     commands: *)
 
+(**Inductive ceval : com -> state -> result -> state -> Prop :=
+  | E_Skip : forall st,
+      st =[ CSkip ]=> st / SContinue
+  |E_Break : forall st,
+      st =[ CBreak ]=> st / SBreak
+  |E_Assign : forall st,
+      st =[ CAsgn x a ] =>  CAsgn x a / SConitnue
+  |E_If = 
+  where "st '=[' c ']=>' st' '/' s" := (ceval c st s st').*)
+
 
 Inductive com : Type :=
   | CSkip
-(* TODO *)
+  | CBreak 
   | CAsgn (x : string) (a : aexp)
   | CSeq (c1 c2 : com)
   | CIf (b : bexp) (c1 c2 : com)
@@ -182,11 +192,10 @@ Inductive com : Type :=
 
 
 (**
-  1.2. TODO: Define new notation for the [break] statement.
-*)
+  1.2. TODO: Define new notation for the [break] statement.*)
 
-
-(* TODO *)
+Notation "'break'" :=
+          CBreak ( in custom com at level 0 )
 Notation "'skip'"  :=
          CSkip (in custom com at level 0) : com_scope.
 Notation "x := y"  :=
@@ -208,6 +217,6 @@ Notation "'while' x 'do' y 'end'" :=
   1.3. TODO: Define the programs p1 and p2 as specified in the project brief.
 *)
 
-Definition p1 := (* TODO *)
+Definition p1 := <{x := 1; y:= 0; while true do (if   }>
 
 Definition p2 := (* TODO *)
