@@ -195,7 +195,7 @@ Inductive com : Type :=
   1.2. TODO: Define new notation for the [break] statement.*)
 
 Notation "'break'" :=
-          CBreak ( in custom com at level 0 )
+          CBreak ( in custom com at level 0 ).
 Notation "'skip'"  :=
          CSkip (in custom com at level 0) : com_scope.
 Notation "x := y"  :=
@@ -217,6 +217,6 @@ Notation "'while' x 'do' y 'end'" :=
   1.3. TODO: Define the programs p1 and p2 as specified in the project brief.
 *)
 
-Definition p1 := <{x := 1; y:= 0; while true do (if   }>
+Definition p1 := <{X := 1; Y:= 0; while true do (if (X = 0) then break else Y := Y+1; X := X-1 end) end}>.
 
-Definition p2 := (* TODO *)
+Definition p2 := <{X := 1; Y:= 0; while ~(X = 0) do (if (X = 0) then break else Y := Y+1; X := X-1 end) end  }>.
