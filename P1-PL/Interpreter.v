@@ -22,14 +22,14 @@ From FirstProject Require Import RelationalEvaluation.
     bit of auxiliary notation to hide the plumbing involved in
     repeatedly matching against optional states. *)
 
-(*
-Notation "'LETOPT' x <== e1 'IN' e2"
+
+Notation "'LETOPT' (x,y) <== e1 'IN' e2"
    := (match e1 with
-         | Some x => e2
+         | Some (x,y) => e2
          | None => None
        end)
    (right associativity, at level 60).
-*)
+
 
 (** 2.1. TODO: Implement ceval_step as specified. To improve readability,
                you are strongly encouraged to define auxiliary notation.
@@ -40,8 +40,32 @@ Fixpoint ceval_step (st : state) (c : com) (i : nat): option (state*result) :=
   match i with
   | O => None
   | S i' =>
-  (* TODO *)
-end.
+    match c with
+        | <{ break}> =>
+            Some (st , SBreak)
+        | <{ skip }> =>
+            Some (st, SContinue)
+        | <{ l := a1 }> =>
+            Some ((l !-> aeval st a1 ; st),SContinue)
+        | <{ c1 ; c2 }> =>
+            match ceval_step st c1 i' with
+            | Some (st1, SBreak) => Some (st1, SBreak)
+            | None => None
+            | Some (st1, SContinue) => ceval_step st1 c2 i'
+            end
+        | <{ if b then c1 else c2 end }> =>
+            if (beval st b)
+              then ceval_step st c1 i'
+              else ceval_step st c2 i'
+        | <{ while b1 do c1 end }> =>
+            (if (beval st b1)
+            then match ceval_step st c1 i' with
+            | Some (st', SContinue) => ceval_step st' c i'
+            | _ => Some (st, SContinue)
+            end
+            else Some (st ,SContinue))
+    end 
+  end.
 
 (* The following definition is taken from the book and it can be used to
    test the step-indexed interpreter. *)
@@ -76,10 +100,15 @@ ceval_step st <{ break; c }> i1
 ceval_step st <{ break; skip }> i1
 ).
 Proof.
-  (* TODO *)
+intros.
+exists 2.
+intros. 
+destruct i1;try lia.
+destruct i1;try lia.
+simpl.
+reflexivity.
 Qed.
 
-(* TODO *)
 Theorem inequivalence1: forall st c,
 (exists i0,
 forall i1, i1>=i0 ->
@@ -88,17 +117,31 @@ ceval_step st <{ break; c }> i1
 ceval_step st <{ skip }> i1
 ).
 Proof.
-  (* TODO *)
+intros.
+exists 2.
+intros. 
+destruct i1;try lia.
+destruct i1;try lia.
+simpl.
+injection.
+discriminate.
 Qed.
 
-(* TODO *)
 Theorem p1_equivalent_p2: forall st,
   (exists i0,
     forall i1, i1>=i0 ->
       ceval_step st p1 i1 = ceval_step st p2 i1
   ).
 Proof.
-  (* TODO *)
+intros.
+exists 6.
+intros. 
+destruct i1;try lia.
+destruct i1;try lia.
+destruct i1;try lia.
+destruct i1;try lia.
+destruct i1;try lia.
+destruct i1;try lia.
+simpl.
+reflexivity.
 Qed.
-
-
