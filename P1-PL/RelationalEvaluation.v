@@ -171,6 +171,13 @@ Inductive ceval : com -> state -> result -> state -> Prop :=
              Add a succint comment before each property explaining the property in your own words.
 *)
 
+
+(** 
+  The following property states that if the command is a sequence with as first
+  command a break, the state will not change (because the second command
+  will not be executed).
+*)
+
 Theorem break_ignore : forall c st st' s,
      st =[ break; c ]=> st' / s ->
      st = st'.
@@ -178,48 +185,85 @@ Proof.
   intros c st st' s. 
   intros H.
   inversion H.
-  - inversion H5. subst. reflexivity.
+  - inversion H5. reflexivity.
   - inversion H2.
 Qed.
+
+
+(** 
+  The following property states that after a while command, the raised signal 
+  is always [SContinue].
+*)
 
 Theorem while_continue : forall b c st st' s,
   st =[ while b do c end ]=> st' / s ->
   s = SContinue.
 Proof.
-  intros b c st st' s. 
-  intros H.
-  inversion H.
-  - inversion H5. subst. reflexivity.
-
+  intros b c st st' s H.
+  inversion H; subst; reflexivity.
 Qed.
+
+(** 
+  The following property states that if after a command c, the signal
+  raised is [SBreak], then a while command with c in its body will end
+  and the state st' after the while command is the same state resulting
+  from the c command.
+*)
+
 
 Theorem while_stops_on_break : forall b c st st',
   beval st b = true ->
   st =[ c ]=> st' / SBreak ->
   st =[ while b do c end ]=> st' / SContinue.
 Proof.
-
+  intros b c st st' H1 H2.
+  apply E_WhileTrueBreak; assumption.
 Qed.
+
+
+(** 
+  The following property states that the results from a sequence with the first
+  command raising [SContinue] are the same as the results obtained by applying 
+  the second command on the results from the first command.
+*)
 
 Theorem seq_continue : forall c1 c2 st st' st'',
   st =[ c1 ]=> st' / SContinue ->
   st' =[ c2 ]=> st'' / SContinue ->
   st =[ c1 ; c2 ]=> st'' / SContinue.
 Proof.
-
+  intros c1 c2 st st' st'' H1 H2.
+  apply E_SeqContinue with st'; assumption.
 Qed.
+
+(** 
+  The following property states that the results from a sequence with the first
+  command raising [SBreak] are the same as the results obtained by applying 
+  the first command and ignoring the second one.
+*)
+
 
 Theorem seq_stops_on_break : forall c1 c2 st st',
   st =[ c1 ]=> st' / SBreak ->
   st =[ c1 ; c2 ]=> st' / SBreak.
 Proof.
-
+  intros c1 c2 st st' H.
+  apply E_SeqBreak. assumption.
 Qed.
+
+
+(** 
+  The following property states that if a while loop results in a state st',
+  and in that state b is true, that means that the while loop was broken by a 
+  [SBreak] signal. Therefore there must exist a state st'' that results in
+  the state st' when applying c, and in a [SBreak] signal raised.
+*)
+
 
 Theorem while_break_true : forall b c st st',
   st =[ while b do c end ]=> st' / SContinue ->
   beval st' b = true ->
   exists st'', st'' =[ c ]=> st' / SBreak.
 Proof.
-
+  intros b c st st' H1 H2.
 Qed.
