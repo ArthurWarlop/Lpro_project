@@ -186,11 +186,8 @@ Theorem while_continue : forall b c st st' s,
   st =[ while b do c end ]=> st' / s ->
   s = SContinue.
 Proof.
-  intros b c st st' s. 
-  intros H.
-  inversion H.
-  - inversion H5. subst. reflexivity.
-
+  intros b c st st' s H.
+  inversion H; subst; reflexivity.
 Qed.
 
 Theorem while_stops_on_break : forall b c st st',
@@ -198,7 +195,8 @@ Theorem while_stops_on_break : forall b c st st',
   st =[ c ]=> st' / SBreak ->
   st =[ while b do c end ]=> st' / SContinue.
 Proof.
-
+  intros b c st st' Hb Hc.
+  apply E_WhileTrueBreak; assumption.
 Qed.
 
 Theorem seq_continue : forall c1 c2 st st' st'',
@@ -206,7 +204,8 @@ Theorem seq_continue : forall c1 c2 st st' st'',
   st' =[ c2 ]=> st'' / SContinue ->
   st =[ c1 ; c2 ]=> st'' / SContinue.
 Proof.
-
+  intros c1 c2 st st' st'' H1 H2.
+  apply E_SeqContinue with st'; assumption.
 Qed.
 
 Theorem seq_stops_on_break : forall c1 c2 st st',
