@@ -1,8 +1,8 @@
 # Group Identification
 
  - Evandro Giovanini, ist1105702, efgiovanini@gmail.com
- - Arthur Warlop, ist1104786, Email
- - Yahya Makhlouf, ist1107658, Email yahya.makhlouf2@gmail.com
+ - Arthur Warlop, ist1104786, warloparthur@gmail.com
+ - Yahya Makhlouf, ist1107658, yahya.makhlouf2@gmail.com
 
 # Implemented Features
 Below is a list of features we've implemented. We've listed the main author of 
