@@ -11,12 +11,12 @@ each feature, but all group members contributed to all features.
 | Task                                     | Main author |
 | ---------------------------------------- | :---------: |
 | README file properly filled in           |             |
-| **Task 1 (Imp.v)**                       |  Group      |
+| **Task 1 (Imp.v)**                       |  Yahya      |
 | Extend `com`                             |             |
 | New notation                             |             |
 | Examples `p1` and `p2`                   |             |
 | **Task 2 (Interpreter.v)**               |  Yahya      |
-| Implementation of step-indexed evaluator |             |
+| Implementation of step-indexed evaluator |  Group      |
 | Proof of `equivalence1`                  |             |
 | Proof of `inequivalence1`                |             |
 | Proof of `p1_equivalent_p2`              |             |
@@ -27,7 +27,7 @@ each feature, but all group members contributed to all features.
 | Proof of `while_stops_on_break`          |             |
 | Proof of `seq_continue`                  |             |
 | Proof of `seq_stops_on_break`            |             |
-| Proof of `while_break_true`              |             |
+| Proof of `while_break_true`              |  Yahya      |
 | **Task 3 (AdditionalProperties.v)**      |  Arthur     |
 | Proof of `ceval_step_more`               |             |
 | Proof of `ceval_step__ceval`             |             |
