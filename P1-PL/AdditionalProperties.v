@@ -30,9 +30,23 @@ Theorem ceval_step_more: forall i1 i2 st st' res c,
 i1 <= i2 ->
 ceval_step st c i1 = Some (st', res) ->
 ceval_step st c i2 = Some (st', res).
+(* We attempted the proof, but we can't manage to prove the last subgoal. 
+
+ Proof.
+  intros i1 i2 st st' res c Hleq Heval.
+  induction i2 as [| i2' IH]. 
+  - inversion Hleq. rewrite H in Heval. apply Heval.
+  - destruct i1 as [| i1'] eqn:Eqi1.
+    + inversion Heval.
+    + simpl in Hleq.
+      apply le_S_n in Hleq.
+      apply IH with (S i1 := i1') in Heval.
+      apply Heval.
+      apply Hleq.
+Qed. *)
+
 Proof.
-  (* TODO *)
-Qed.
+Admitted.
 
 
 (* ################################################################# *)
@@ -47,17 +61,23 @@ Theorem ceval_step__ceval: forall c st st' res,
     (exists i, ceval_step st c i = Some (st', res)) ->
     st =[ c ]=> st' / res.
 Proof.
-intros c st st' res H.
-inversion H as [i E].
-clear H.
-generalize dependent res.
-generalize dependent st'.
-generalize dependent st.
-generalize dependent c.
-induction i as [| i' ].
-
-(* TODO *)
-
+Proof.
+  intros c st st' res H.
+  inversion H as [i E].
+  clear H.
+  generalize dependent res.
+  generalize dependent st'.
+  generalize dependent st.
+  generalize dependent c.
+  induction i.
+  - assumption.
+  -destruct (ceval_step st c i') as [[st'' res']|] eqn:Heval.
+    + apply ceval_step_more. 
+ apply IH in E.
+      apply E_Seq with (st' := st'') (res' := res').
+      * apply Heval.
+      * apply E.
+    + inversion E.
 Qed.
 
 (** 
