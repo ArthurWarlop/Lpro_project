@@ -272,11 +272,9 @@ Proof.
   intros b c st st' H1 H2.
   remember (while2 b do c end) as loop eqn:Heqloop.
   induction H1; inversion Heqloop; subst.
-  
-  - (* E_WhileFalse *)
-    rewrite H in H2. discriminate.
-  
-  - (* E_WhileTrueContinue *)
-    apply IHceval2. 
+  - rewrite H in H2. discriminate.
+  - apply IHceval2. 
   + try reflexivity.
   + assumption.
+  - exists st. assumption.
+Qed.
