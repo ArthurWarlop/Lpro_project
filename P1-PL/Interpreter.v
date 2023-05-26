@@ -145,3 +145,91 @@ destruct i1;try lia.
 simpl.
 reflexivity.
 Qed.
+
+
+
+(**
+Extra goal 1
+Below is an alternative ceval_step that returns an error message 
+and shows the number of steps when succeeding
+**)
+Inductive result' : Type :=
+  | SContinue' (n: nat)
+  | SBreak' (n: nat)
+  | SError (e: string).
+
+
+Fixpoint ceval_step' (st : state) (c : com) (i : nat): result' * state :=
+  match i with
+  | O => (SError "Out of steps", st)
+  | S i' =>
+    match c with
+        | <{ break }> =>
+            (SBreak' 1, st)
+        | <{ skip }> =>
+            (SContinue' 1, st)
+        | <{ l := a1 }> =>
+            let n := aeval st a1 in
+            (SContinue' 1, (l !-> n ; st))
+        | <{ c1 ; c2 }> =>
+            match ceval_step' st c1 i' with
+            | (SContinue' n, st1) => 
+              match ceval_step' st1 c2 (i' - n) with
+              | (SContinue' m, st2) => (SContinue' (1 + n + m), st2)
+              | (SBreak' m, st2) => (SBreak' (1 + n + m), st2)
+              | e => e
+              end
+            | (SBreak' n, st1) => (SBreak' (1 + n), st1)
+            | e => e
+            end
+        | <{ if b then c1 else c2 end }> =>
+            if (beval st b)
+            then ceval_step' st c1 i'
+            else ceval_step' st c2 i'
+        | <{ while b1 do c1 end }> =>
+            (if (beval st b1)
+            then match ceval_step' st c1 i' with
+            | (SContinue' n, st') => ceval_step' st' c (i' - n)
+            | (SBreak' n, st') => (SContinue' (1 + n), st')
+            | e => e
+            end
+            else (SContinue' 1, st))
+    end 
+  end.
+
+Theorem equivalence1': forall st c,
+(exists i0,
+forall i1, i1>=i0 ->
+ceval_step' st <{ break; c }> i1
+=
+ceval_step' st <{ break; skip }> i1
+).
+Proof.
+intros.
+exists 2.
+intros. 
+destruct i1;try lia.
+destruct i1;try lia.
+simpl.
+reflexivity.
+Qed.
+
+
+Theorem inequivalence1': forall st c,
+(exists i0,
+forall i1, i1>=i0 ->
+ceval_step' st <{ break; c }> i1
+<>
+ceval_step' st <{ skip }> i1
+).
+Proof.
+intros.
+exists 2.
+intros. 
+destruct i1;try lia.
+destruct i1;try lia.
+simpl.
+injection.
+discriminate.
+Qed.
+
