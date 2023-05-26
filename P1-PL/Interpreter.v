@@ -91,7 +91,11 @@ Proof. reflexivity. Qed.
 (** 
   2.2. TODO: Prove the following three properties.
              Add a succint explanation in your own words of why `equivalence1` and `inequivalence1` are valid.
-*)
+  (* The theorem states that for any command c and state st, there exists an index i0 such that for all i1 greater than i0, 
+   the evaluation of the command sequence break; c up to index i1 is equivalent to the evaluation of the command sequence break; skip up to index i1.
+     
+     The command 'break' stop the execution of the loop, so the next command command c or skip are irrelevant and thus the outout would be the same*)
+ *)
 Theorem equivalence1: forall st c,
 (exists i0,
 forall i1, i1>=i0 ->
@@ -109,6 +113,8 @@ simpl.
 reflexivity.
 Qed.
 
+     
+     
 Theorem inequivalence1: forall st c,
 (exists i0,
 forall i1, i1>=i0 ->
@@ -116,6 +122,13 @@ ceval_step st <{ break; c }> i1
 <>
 ceval_step st <{ skip }> i1
 ).
+     
+     
+     (* The theorem states that for any command c and state st, there exists an index i0 such that for all i1 greater than i0, 
+   the evaluation of the command sequence break; c up to index i1 is not equivalent to the evaluation of the command skip up to index i1.
+     
+     The command 'break' stop the execution of the loop, however the command skip do nothing to the flow of commands and doesn't exist the loop*)
+ *)
 Proof.
 intros.
 exists 2.
