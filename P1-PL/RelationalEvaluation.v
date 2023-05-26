@@ -264,6 +264,19 @@ Theorem while_break_true : forall b c st st',
   st =[ while b do c end ]=> st' / SContinue ->
   beval st' b = true ->
   exists st'', st'' =[ c ]=> st' / SBreak.
+    
+(*A special notation that we can apply it to the proof below*)
+Notation "'while2' x 'do' y 'end'" := (CWhile x y) : com_scope.
+
 Proof.
   intros b c st st' H1 H2.
-Qed.
+  remember (while2 b do c end) as loop eqn:Heqloop.
+  induction H1; inversion Heqloop; subst.
+  
+  - (* E_WhileFalse *)
+    rewrite H in H2. discriminate.
+  
+  - (* E_WhileTrueContinue *)
+    apply IHceval2. 
+  + try reflexivity.
+  + assumption.
