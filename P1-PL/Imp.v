@@ -171,15 +171,6 @@ Proof. reflexivity. Qed.
 (** Here is the formal definition of the abstract syntax of
     commands: *)
 
-(**Inductive ceval : com -> state -> result -> state -> Prop :=
-  | E_Skip : forall st,
-      st =[ CSkip ]=> st / SContinue
-  |E_Break : forall st,
-      st =[ CBreak ]=> st / SBreak
-  |E_Assign : forall st,
-      st =[ CAsgn x a ] =>  CAsgn x a / SConitnue
-  |E_If = 
-  where "st '=[' c ']=>' st' '/' s" := (ceval c st s st').*)
 
 
 Inductive com : Type :=
